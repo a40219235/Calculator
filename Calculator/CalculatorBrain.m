@@ -32,7 +32,6 @@
 {
 	[self.programStack addObject:operand];
 	return [CalculatorBrain runProgram:self.program];
-
 }
 
 -(id)program
