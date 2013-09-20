@@ -10,8 +10,10 @@
 #import "CalculatorBrain.h"
 
 @interface CalculatorViewController ()
-@property (weak, nonatomic) IBOutlet UILabel *display;
+@property (weak, nonatomic) IBOutlet UILabel *resultDisplay;
+@property (weak, nonatomic) IBOutlet UILabel *functionDisplay;
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringADigit;
+
 @property (nonatomic, strong) CalculatorBrain *brain;
 
 @end
@@ -40,9 +42,9 @@
 }
 - (IBAction)digitPressed:(UIButton *)sender {
 	if (self.userIsInTheMiddleOfEnteringADigit) {
-		self.display.text = [self.display.text stringByAppendingFormat:@"%@",[sender currentTitle]];
+		self.resultDisplay.text = [self.resultDisplay.text stringByAppendingFormat:@"%@",[sender currentTitle]];
 	}else{
-		self.display.text = [sender currentTitle];
+		self.resultDisplay.text = [sender currentTitle];
 		self.userIsInTheMiddleOfEnteringADigit = YES;
 	}
 }
@@ -54,11 +56,11 @@
 	
 	NSString *operation = [sender currentTitle];
 	double result = [self.brain performOperand:operation];
-	self.display.text = [NSString stringWithFormat:@"%g",result];
+	self.resultDisplay.text = [NSString stringWithFormat:@"%g",result];
 }
 - (IBAction)enterPressed {
 	self.userIsInTheMiddleOfEnteringADigit = NO;
-	[self.brain pushOperand:[self.display.text doubleValue]];
+	[self.brain pushOperand:[self.resultDisplay.text doubleValue]];
 }
 
 @end
