@@ -102,14 +102,15 @@
 }
 
 - (IBAction)deletePressed {
-	if ([self.functionDisplay.text length]){
-		int cursorCurrentIndex = [self getCursorCurrentIndex];
-		NSLog(@"cursorCurrentIndex = %d", cursorCurrentIndex);
-		NSRange index = NSMakeRange(cursorCurrentIndex - 1, 1);
-		
-		self.functionDisplay.text = [self.functionDisplay.text stringByReplacingCharactersInRange:index withString:@""];
-		[self repositionCursorSoItsNotGoingOffToTheBegining:cursorCurrentIndex];
+	int cursorCurrentIndex = [self getCursorCurrentIndex];
+	if (!cursorCurrentIndex ) {
+		return; //do nothing if cursor is at the begining of the text
 	}
+	NSLog(@"cursorCurrentIndex = %d", cursorCurrentIndex);
+	NSRange index = NSMakeRange(cursorCurrentIndex - 1, 1);
+	
+	self.functionDisplay.text = [self.functionDisplay.text stringByReplacingCharactersInRange:index withString:@""];
+	[self repositionCursorSoItsNotGoingOffToTheBegining:cursorCurrentIndex -1];
 }
 
 
