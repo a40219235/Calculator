@@ -9,6 +9,12 @@
 #import "CalculatorViewController.h"
 #import "CalculatorBrain.h"
 
+enum{
+	kTestFunction1,
+	kTestFunction2,
+	kTestFunction3
+}testFunctions;
+
 @interface CalculatorViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *resultDisplay;
 @property (weak, nonatomic) IBOutlet UITextField *functionDisplay;
@@ -93,12 +99,17 @@
 
 - (IBAction)operationPressed:(UIButton *)sender {
 	//get the current cursor index and appending operand from that index
+	if (!self.userIsInTheMiddleOfEnteringADigit) self.userIsInTheMiddleOfEnteringADigit = YES;
 	int cursorCurrentIndex = [self getCursorCurrentIndex];
 	NSRange index = NSMakeRange(cursorCurrentIndex, 0);
 
 	self.functionDisplay.text = [self.functionDisplay.text stringByReplacingCharactersInRange:index withString:sender.currentTitle];
-	
-	[self repositionCursorSoItsNotGoingOffToTheBegining:cursorCurrentIndex + [sender.currentTitle length]];
+	if ([sender.currentTitle length] > 1) {
+		//make the cursor stays inside the parenthesis
+		[self repositionCursorSoItsNotGoingOffToTheBegining:cursorCurrentIndex + [sender.currentTitle length] -1];
+	}else{
+		[self repositionCursorSoItsNotGoingOffToTheBegining:cursorCurrentIndex + [sender.currentTitle length]];
+	}
 }
 
 - (IBAction)deletePressed {
@@ -113,13 +124,10 @@
 	[self repositionCursorSoItsNotGoingOffToTheBegining:cursorCurrentIndex -1];
 }
 
-
-
 //enterButton just run the program and update the result
 - (IBAction)enterPressed {
 	double result = [CalculatorBrain calculateExpressFromString:self.functionDisplay.text];
-	NSLog(@"tested       result = %g", cos(sin(cos(5)))+ cos(2)*sin(-5) - cos(sin(35)-cos(63*sqrt(cos(2+sin(43))))));
-	NSLog(@"enterPressed result = %g", result);
+	self.resultDisplay.text = [NSString stringWithFormat:@"%g", result];
 }
 
 - (IBAction)moveCursor:(UIButton *)sender {
@@ -142,4 +150,16 @@
 	UITextRange *newRange = [self.functionDisplay textRangeFromPosition:cursorNewPosition toPosition:cursorNewPosition];
 	[self.functionDisplay setSelectedTextRange:newRange];
 }
+
+- (IBAction)testsPressed:(UIButton *)sender {
+	if([sender.currentTitle isEqualToString:@"test1"]) {
+		self.functionDisplay.text = @"3*(sin(cos(sqrt(23))))";
+	}else if ([sender.currentTitle isEqualToString:@"test2"]){
+		self.functionDisplay.text = @"-(sqrt(25)-sin(26)+cos(45)-sin(5)*cos(3))";
+	}else if ([sender.currentTitle isEqualToString:@"test3"]){
+		self.functionDisplay.text = @"sin(cos(23)-cos(sin(56*sin(32))))";
+	}
+	[self enterPressed];
+}
+
 @end
