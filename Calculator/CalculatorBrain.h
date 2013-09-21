@@ -19,4 +19,6 @@
 +(double)runProgram:(id)program;
 +(NSString *)descriptionOfProgram:(id)program;
 
++(double)calculateExpressFromString:(NSString *)expressionString;
+
 @end

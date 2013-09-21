@@ -10,10 +10,20 @@
 
 @interface CalculatorBrain()
 @property (nonatomic, strong) NSMutableArray *programStack;
+@property (nonatomic, strong) NSMutableArray *geometryOperationStack;//sin, cos, tan
 @end
 
 @implementation CalculatorBrain
 @synthesize programStack = _programStack;
+@synthesize geometryOperationStack = _geometryOperationStack;
+
+-(NSMutableArray *)geometryOperationStack
+{
+	if (!_geometryOperationStack) {
+		_geometryOperationStack = [[NSMutableArray alloc] init];
+	}
+	return _geometryOperationStack;
+}
 
 -(NSMutableArray *)programStack
 {
@@ -77,6 +87,115 @@
 		}
 	}
 	return result;
+}
+
+//if geometryOperand is nil, then just return the expression calculation
++(double)performCalculationWithString:(NSString *)expressionString andGeometryOperand:(NSString *)geometryOperand
+{
+	double result = 0;
+	NSExpression *expression = [NSExpression expressionWithFormat:expressionString];
+	result = [[expression expressionValueWithObject:nil context:nil] doubleValue];
+	if ([geometryOperand hasPrefix:@"sin"]) {
+		result = sin(result);
+	}else if ([geometryOperand hasPrefix:@"cos"]){
+		result = cos(result);
+	}
+	return result;
+}
+
++(double)calculateExpressFromString:(NSString *)expressionString
+{
+	double result = 0;
+	//expressionString = @"sin(5+7 * sin(6-1)) + 5+6 + sin(6+5)";
+	if ([expressionString rangeOfString:@"sin("].location != NSNotFound || [expressionString rangeOfString:@"cos("].location != NSNotFound) {
+		NSLog(@"expressionStringBefore = %@", expressionString);
+		//string has sin() operation
+		NSString *expressionStringCopy = [expressionString copy];
+		NSArray *innerMostGeometryOperandAndOperation = [self getTheInnerMostGeometryOperation: expressionStringCopy];
+		NSString *innerMostGeometryOperand = innerMostGeometryOperandAndOperation[0];
+		NSString *innerMostGeometryOperation = innerMostGeometryOperandAndOperation[1];//array 1 index is operation
+		NSLog(@"innerMostGeometryOperandAndOperation = %@", [innerMostGeometryOperandAndOperation description]);
+		
+		NSRange innerMostGeometryStringRange = [expressionString rangeOfString:[NSString stringWithFormat:@"%@(%@)",innerMostGeometryOperand, innerMostGeometryOperation]];
+		double innerMostGeometryStringResult = [self performCalculationWithString:innerMostGeometryOperation andGeometryOperand:innerMostGeometryOperand];
+		NSLog(@"expressionStringBefore = %@", expressionString);
+		expressionString = [expressionString stringByReplacingCharactersInRange:innerMostGeometryStringRange withString:[NSString stringWithFormat:@"%g", innerMostGeometryStringResult]];
+		NSLog(@"expressionStringAfter = %@", expressionString);
+		return [self calculateExpressFromString:expressionString];
+	}
+
+	NSLog(@"expression result = %@", expressionString);
+	result = [self performCalculationWithString:expressionString andGeometryOperand:nil];
+	NSLog(@"result = %g", result);
+	
+	return result;
+}
+
+//return array should contain operand (sin, cos), and operation(functions inside sin, cos. e.x sin(function))
++(NSArray *)getTheInnerMostGeometryOperation:(NSString*)geometryString
+{
+	NSMutableArray *operandAndOperation = [[NSMutableArray alloc] init];
+	NSRange range = [geometryString rangeOfString:@"sin("];
+	int geometryOperationStartIndex = range.location + range.length;
+	int geometryOperationEndIndex = 0;
+	int leftParenthesisCount = 1;//when this reaches 0, it means the sin function is closed
+	NSString *geometryOperand;
+	if (range.location != NSNotFound) {
+		NSString *expressionStringCopy = [geometryString copy];
+		for (int i = geometryOperationStartIndex; i < [expressionStringCopy length]; i++) {
+			if ([expressionStringCopy characterAtIndex:i] == '(') {
+//				NSLog(@"(found, index = %d", i);
+				leftParenthesisCount ++;
+			} else if ([expressionStringCopy characterAtIndex:i] == ')') {
+//				NSLog(@")found, index = %d", i);
+				leftParenthesisCount --;
+			}
+			if (leftParenthesisCount == 0) {
+//				NSLog(@"finished index = %d", i);
+				geometryOperationEndIndex = i;
+				break;
+			}
+		}
+		geometryOperand = @"sin";
+	}else if ([geometryString rangeOfString:@"cos("].location != NSNotFound){
+		range = [geometryString rangeOfString:@"cos("];
+		geometryOperationStartIndex = range.location + range.length;
+		leftParenthesisCount = 1;
+	
+		NSString *expressionStringCopy = [geometryString copy];
+		for (int i = geometryOperationStartIndex; i < [expressionStringCopy length]; i++) {
+			if ([expressionStringCopy characterAtIndex:i] == '(') {
+				//				NSLog(@"(found, index = %d", i);
+				leftParenthesisCount ++;
+			} else if ([expressionStringCopy characterAtIndex:i] == ')') {
+				//				NSLog(@")found, index = %d", i);
+				leftParenthesisCount --;
+			}
+			if (leftParenthesisCount == 0) {
+				//				NSLog(@"finished index = %d", i);
+				geometryOperationEndIndex = i;
+				break;
+			}
+		}
+		geometryOperand = @"cos";
+	}
+	
+	NSRange geometryOperationRange = NSMakeRange(geometryOperationStartIndex, geometryOperationEndIndex - geometryOperationStartIndex);
+	geometryString = [geometryString substringWithRange:geometryOperationRange];
+//	NSLog(@"expressionString = %@", geometryString);
+	if ([geometryString rangeOfString:@"sin("].location != NSNotFound || [geometryString rangeOfString:@"cos("].location != NSNotFound) {
+		return [self getTheInnerMostGeometryOperation:geometryString];
+	}
+	[operandAndOperation addObject:geometryOperand];
+	[operandAndOperation addObject:geometryString];
+	geometryString = [NSString stringWithFormat:@"%@(%@)",geometryOperand,geometryOperand];
+	return [operandAndOperation copy];
+}
+
++(NSRange)findSubString:(NSString *)subString inString:(NSString *)string
+{
+	NSRange range = [string rangeOfString:subString];
+	return range;
 }
 
 @end

@@ -15,6 +15,7 @@
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringADigit;
 @property (nonatomic) BOOL userHasEnteredAnOpration;
 @property (nonatomic, strong) UITextPosition *cursorNewPosition;
+@property (nonatomic, strong) NSMutableArray *stack;
 
 @property (nonatomic, strong) CalculatorBrain *brain;
 
@@ -56,12 +57,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark-Helper Method
+
+
+
+#pragma mark-Button Pressed
+
 - (IBAction)digitPressed:(UIButton *)sender {
 	//get the current cursor index and appending operand from that index
 	UITextRange *selectionRange = self.functionDisplay.selectedTextRange;
 	UITextPosition *selectedStartPosition = selectionRange.start;
-	int cursorIndex = [self.functionDisplay offsetFromPosition:self.functionDisplay.beginningOfDocument toPosition:selectedStartPosition];
-	NSRange index = NSMakeRange(cursorIndex, 0);
+	int cursorCurrentIndex = [self.functionDisplay offsetFromPosition:self.functionDisplay.beginningOfDocument toPosition:selectedStartPosition];
+	NSRange index = NSMakeRange(cursorCurrentIndex, 0);
 	
 	if (self.userIsInTheMiddleOfEnteringADigit) {
 		self.functionDisplay.text = [self.functionDisplay.text stringByReplacingCharactersInRange:index withString:sender.currentTitle];
@@ -71,7 +78,7 @@
 	}
 	
 	//reset the cursor index after appending the text, otherwise the cursor would go to the beginingOfDocument, not sure why
-	UITextPosition *repositionCursor = [self.functionDisplay positionFromPosition:self.functionDisplay.beginningOfDocument offset:cursorIndex + [sender.currentTitle length]];
+	UITextPosition *repositionCursor = [self.functionDisplay positionFromPosition:self.functionDisplay.beginningOfDocument offset:cursorCurrentIndex + [sender.currentTitle length]];
 	UITextRange *newRange = [self.functionDisplay textRangeFromPosition:repositionCursor toPosition:repositionCursor];
 	[self.functionDisplay setSelectedTextRange:newRange];
 }
@@ -80,20 +87,22 @@
 	//get the current cursor index and appending operand from that index
 	UITextRange *selectionRange = self.functionDisplay.selectedTextRange;
 	UITextPosition *selectedStartPosition = selectionRange.start;
-	int cursorIndex = [self.functionDisplay offsetFromPosition:self.functionDisplay.beginningOfDocument toPosition:selectedStartPosition];
-	NSRange index = NSMakeRange(cursorIndex, 0);
+	int cursorCurrentIndex = [self.functionDisplay offsetFromPosition:self.functionDisplay.beginningOfDocument toPosition:selectedStartPosition];
+	NSRange index = NSMakeRange(cursorCurrentIndex, 0);
 
 	self.functionDisplay.text = [self.functionDisplay.text stringByReplacingCharactersInRange:index withString:sender.currentTitle];
 	
 	//reset the cursor index after appending the text, otherwise the cursor would go to the beginingOfDocument, not sure why
-	UITextPosition *repositionCursor = [self.functionDisplay positionFromPosition:self.functionDisplay.beginningOfDocument offset:cursorIndex + [sender.currentTitle length]];
+	UITextPosition *repositionCursor = [self.functionDisplay positionFromPosition:self.functionDisplay.beginningOfDocument offset:cursorCurrentIndex + [sender.currentTitle length]];
 	UITextRange *newRange = [self.functionDisplay textRangeFromPosition:repositionCursor toPosition:repositionCursor];
 	[self.functionDisplay setSelectedTextRange:newRange];
 }
 
 //enterButton just run the program and update the result
 - (IBAction)enterPressed {
-	
+	double result = [CalculatorBrain calculateExpressFromString:self.functionDisplay.text];
+	NSLog(@"tested       result = %g", cos(sin(cos(5)))+ cos(2)*sin(-5) - cos(sin(35)-cos(63*sqrt(cos(2+sin(43))))));
+	NSLog(@"enterPressed result = %g", result);
 }
 
 - (IBAction)moveCursor:(UIButton *)sender {
