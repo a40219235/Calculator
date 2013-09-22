@@ -9,16 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface CalculatorBrain : NSObject
-
--(void)pushOperand:(double)number;
-
--(double)performOperand:(NSString *)operand;
-
-@property (readonly) id program;
-
-+(double)runProgram:(id)program;
-+(NSString *)descriptionOfProgram:(id)program;
-
 +(double)calculateExpressFromString:(NSString *)expressionString encounterException:(void(^)(void))errorHandler;
 
 @end

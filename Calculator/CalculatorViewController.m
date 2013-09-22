@@ -157,13 +157,15 @@ enum{
 
 - (IBAction)testsPressed:(UIButton *)sender {
 	if([sender.currentTitle isEqualToString:@"test1"]) {
-		self.functionDisplay.text = @"3*(sin(cos(sqrt(23))))";
+		self.functionDisplay.text = @"sin(cos(sin(sqrt(56)))) + sin(6)cos(5πsqrt(3))";
 	}else if ([sender.currentTitle isEqualToString:@"test2"]){
 		self.functionDisplay.text = @"-(sqrt(25)-sin(26)+cos(45)-sin(5)*cos(3))";
 	}else if ([sender.currentTitle isEqualToString:@"test3"]){
 		self.functionDisplay.text = @"sin(cos(23)-cos(sin(56*sin(32))))";
 	}
 	[self enterPressed];
+	NSLog(@"test Result   = %g",sin(cos(sin(sqrt(56)))) + sin(6)*cos(5*M_PI*sqrt(3)));
+	NSLog(@"screen Result = %@",self.resultDisplay.text);
 }
 
 - (IBAction)clearPressed:(id)sender {

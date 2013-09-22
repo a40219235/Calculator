@@ -9,12 +9,10 @@
 #import "CalculatorBrain.h"
 
 @interface CalculatorBrain()
-@property (nonatomic, strong) NSMutableArray *programStack;
 @property (nonatomic, strong) NSMutableArray *geometryOperationStack;//sin, cos, tan
 @end
 
 @implementation CalculatorBrain
-@synthesize programStack = _programStack;
 @synthesize geometryOperationStack = _geometryOperationStack;
 
 -(NSMutableArray *)geometryOperationStack
@@ -23,70 +21,6 @@
 		_geometryOperationStack = [[NSMutableArray alloc] init];
 	}
 	return _geometryOperationStack;
-}
-
--(NSMutableArray *)programStack
-{
-	if (!_programStack) {
-		_programStack = [[NSMutableArray alloc] init];
-	}
-	return _programStack;
-}
-
--(void)pushOperand:(double)number
-{
-	[self.programStack addObject:[NSNumber numberWithDouble:number]];
-}
-
--(double)performOperand:(NSString *)operand
-{
-	[self.programStack addObject:operand];
-	return [CalculatorBrain runProgram:self.program];
-}
-
--(id)program
-{
-	return [self.programStack copy];
-}
-
-+(double)runProgram:(id)program
-{
-	NSMutableArray *stack;
-	if ([program isKindOfClass:[NSArray class]]) {
-		stack = [program mutableCopy];
-	}
-	return [self popOperandOffStack:stack];//self is a class in class method
-}
-
-+(NSString *)descriptionOfProgram:(id)program{
-	return nil;
-}
-
-+(double)popOperandOffStack:(NSMutableArray *)stack
-{
-	double result = 0;
-	
-	id topOfStack = [stack lastObject];
-	if (topOfStack) [stack removeLastObject];
-	
-	if ([topOfStack isKindOfClass:[NSNumber class]]) {
-		result = [topOfStack doubleValue];
-	}else if ([topOfStack isKindOfClass:[NSString class]])
-	{
-		NSString *operand = topOfStack;
-		if ([operand isEqualToString:@"+"]) {
-			result = [self popOperandOffStack:stack] +[self popOperandOffStack:stack];
-		}if ([operand isEqualToString:@"*"]) {
-			result = [self popOperandOffStack:stack] * [self popOperandOffStack:stack];
-		}if ([operand isEqualToString:@"-"]) {
-			double subtrahend = [self popOperandOffStack:stack];
-			result = subtrahend - [self popOperandOffStack:stack];
-		}if ([operand isEqualToString:@"/"]) {
-			double divisor = [self popOperandOffStack:stack];
-			result = divisor/[self popOperandOffStack:stack];
-		}
-	}
-	return result;
 }
 
 //if geometryOperand is nil, then just return the expression calculation
@@ -130,7 +64,7 @@
 		char currentChar = [polishingString characterAtIndex:i];
 		if (currentChar == '(') {
 			char previousChar = [polishingString characterAtIndex:i-1];
-			if ([self isNumber:previousChar] || previousChar == ')' ) {
+			if ([self isNumber:previousChar] || previousChar == ')') {
 				NSMutableString *polishingStringMutCopy = [NSMutableString stringWithString:polishingString];
 				[polishingStringMutCopy insertString:@"*" atIndex:i];
 				polishingString = polishingStringMutCopy;
@@ -138,7 +72,7 @@
 			}
 		}else if (currentChar == ')'){
 			char nextChar = [polishingString characterAtIndex:i + 1];
-			if ([self isNumber:nextChar] || nextChar == '(') {
+			if ([self isNumber:nextChar] || nextChar == '(' || (nextChar == 's' && [polishingString characterAtIndex:i + 2] == 'q')) {
 				NSMutableString *polishingStringMutCopy = [NSMutableString stringWithString:polishingString];
 				[polishingStringMutCopy insertString:@"*" atIndex:i+1];
 				polishingString = polishingStringMutCopy;
