@@ -60,6 +60,9 @@
 // if )3 or 3(, append * to make it )*3 or 3*(
 +(NSString *)polishExpressionsWithMutilplyOperand:(NSString *)polishingString
 {
+	if (![polishingString length]) {
+		return nil;
+	}
 	for (int i = 1; i < [polishingString length] -1; i++) {
 		char currentChar = [polishingString characterAtIndex:i];
 		if (currentChar == '(') {
@@ -72,7 +75,7 @@
 			}
 		}else if (currentChar == ')'){
 			char nextChar = [polishingString characterAtIndex:i + 1];
-			if ([self isNumber:nextChar] || nextChar == '(' || (nextChar == 's' && [polishingString characterAtIndex:i + 2] == 'q')) {
+			if ([self isNumber:nextChar] || nextChar == '(' || nextChar == 's' || nextChar == 'c') {
 				NSMutableString *polishingStringMutCopy = [NSMutableString stringWithString:polishingString];
 				[polishingStringMutCopy insertString:@"*" atIndex:i+1];
 				polishingString = polishingStringMutCopy;
@@ -88,9 +91,12 @@
 +(double)calculateExpressFromString:(NSString *)expressionString encounterException:(void (^)(void))errorHandler
 {
 	double result = 0;
+	if (![expressionString length]) {
+		return 0;
+	}
 	// get rid of space and convert π to value, and polish
 	expressionString = [expressionString stringByReplacingOccurrencesOfString:@" " withString:@""];
-	expressionString = [expressionString stringByReplacingOccurrencesOfString:@"π" withString:[NSString stringWithFormat:@"(%g)", M_PI]];
+	expressionString = [expressionString stringByReplacingOccurrencesOfString:@"π" withString:@"(3.14159265358979323846264338327950288)"];
 	expressionString = [self polishExpressionsWithMutilplyOperand:expressionString];
 	
 	if ([expressionString rangeOfString:@"sin("].location != NSNotFound || [expressionString rangeOfString:@"cos("].location != NSNotFound) {

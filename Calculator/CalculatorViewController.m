@@ -20,6 +20,7 @@ enum{
 @property (weak, nonatomic) IBOutlet UITextField *functionDisplay;
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringADigit;
 @property (nonatomic, strong) UITextPosition *cursorNewPosition;
+@property (nonatomic) int testNumber;
 
 @property (nonatomic, strong) CalculatorBrain *brain;
 
@@ -156,16 +157,26 @@ enum{
 }
 
 - (IBAction)testsPressed:(UIButton *)sender {
-	if([sender.currentTitle isEqualToString:@"test1"]) {
-		self.functionDisplay.text = @"sin(cos(sin(sqrt(56)))) + sin(6)cos(5πsqrt(3))";
-	}else if ([sender.currentTitle isEqualToString:@"test2"]){
-		self.functionDisplay.text = @"-(sqrt(25)-sin(26)+cos(45)-sin(5)*cos(3))";
-	}else if ([sender.currentTitle isEqualToString:@"test3"]){
-		self.functionDisplay.text = @"sin(cos(23)-cos(sin(56*sin(32))))";
+	self.testNumber ++;
+	double testResult;
+	switch (self.testNumber) {
+		case 1:
+			self.functionDisplay.text = @"sin(cos(sin(sqrt(56)))) + sin(6)cos(5πsqrt(3))";
+			testResult = sin(cos(sin(sqrt(56)))) + sin(6)*cos(5*M_PI*sqrt(3));
+			break;
+			
+		case 2:
+			self.functionDisplay.text = @"cos(sin(5)cos(20)*sin(123)8)sqrt(134)sin(π)cos(2π)";
+			testResult = cos(sin(5)*cos(20)*sin(123)*8)*sqrt(134)*sin(M_PI)*cos(2*M_PI);
+			break;
+		case 3:
+			self.functionDisplay.text = @"sin(π)";
+			testResult = sin(M_PI);
+			self.testNumber = 0;
 	}
 	[self enterPressed];
-	NSLog(@"test Result   = %g",sin(cos(sin(sqrt(56)))) + sin(6)*cos(5*M_PI*sqrt(3)));
-	NSLog(@"screen Result = %@",self.resultDisplay.text);
+	NSLog(@"test Result   = %g", testResult);
+	NSLog(@"screen Result = %@", self.resultDisplay.text);
 }
 
 - (IBAction)clearPressed:(id)sender {
