@@ -348,6 +348,9 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="digitPressed:" destination="2" eventType="touchUpInside" id="TMc-AJ-box"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s10-CV-d5P">
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -515,6 +518,7 @@
         <class className="CalculatorViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CalculatorViewController.h"/>
             <relationships>
+                <relationship kind="action" name="clearPressed:"/>
                 <relationship kind="action" name="digitPressed:" candidateClass="UIButton"/>
                 <relationship kind="action" name="moveCursor:" candidateClass="UIButton"/>
                 <relationship kind="action" name="operationPressed:" candidateClass="UIButton"/>

@@ -115,7 +115,6 @@ enum{
 	if (!cursorCurrentIndex ) {
 		return; //do nothing if cursor is at the begining of the text
 	}
-	NSLog(@"cursorCurrentIndex = %d", cursorCurrentIndex);
 	NSRange index = NSMakeRange(cursorCurrentIndex - 1, 1);
 	
 	self.functionDisplay.text = [self.functionDisplay.text stringByReplacingCharactersInRange:index withString:@""];
@@ -124,6 +123,8 @@ enum{
 
 //enterButton just run the program and update the result
 - (IBAction)enterPressed {
+	NSLog(@"start ++++++++++++++++++++++");
+	NSLog(@"Calculation Expression  = %@", self.functionDisplay.text);
 	__block BOOL encounterExceptionError = NO;
 	double result = [CalculatorBrain calculateExpressFromString:self.functionDisplay.text encounterException:^{
 		encounterExceptionError = YES;
@@ -142,13 +143,11 @@ enum{
 		if (cursorCurrentIndex > [self.functionDisplay.text length]) {
 			cursorCurrentIndex = [self.functionDisplay.text length];
 		}
-		NSLog(@"cursorCurrentIndex = %d",cursorCurrentIndex);
 	}else if ([sender.currentTitle isEqualToString:@"<-"]) {
 		cursorCurrentIndex --;
 		if (cursorCurrentIndex < 0) {
 			cursorCurrentIndex = 0;
 		}
-		NSLog(@"cursorCurrentIndex = %d",cursorCurrentIndex);
 	}
 	
 	UITextPosition *cursorNewPosition = [self.functionDisplay positionFromPosition:self.functionDisplay.beginningOfDocument offset:cursorCurrentIndex];
