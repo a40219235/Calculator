@@ -19,6 +19,6 @@
 +(double)runProgram:(id)program;
 +(NSString *)descriptionOfProgram:(id)program;
 
-+(double)calculateExpressFromString:(NSString *)expressionString;
++(double)calculateExpressFromString:(NSString *)expressionString encounterException:(void(^)(void))errorHandler;
 
 @end

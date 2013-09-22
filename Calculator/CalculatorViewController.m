@@ -19,9 +19,7 @@ enum{
 @property (weak, nonatomic) IBOutlet UILabel *resultDisplay;
 @property (weak, nonatomic) IBOutlet UITextField *functionDisplay;
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringADigit;
-@property (nonatomic) BOOL userHasEnteredAnOpration;
 @property (nonatomic, strong) UITextPosition *cursorNewPosition;
-@property (nonatomic, strong) NSMutableArray *stack;
 
 @property (nonatomic, strong) CalculatorBrain *brain;
 
@@ -126,8 +124,15 @@ enum{
 
 //enterButton just run the program and update the result
 - (IBAction)enterPressed {
-	double result = [CalculatorBrain calculateExpressFromString:self.functionDisplay.text];
-	self.resultDisplay.text = [NSString stringWithFormat:@"%g", result];
+	__block BOOL encounterExceptionError = NO;
+	double result = [CalculatorBrain calculateExpressFromString:self.functionDisplay.text encounterException:^{
+		encounterExceptionError = YES;
+	}];
+	if (encounterExceptionError){
+		self.resultDisplay.text = @"Invalid Expression";
+	}else{
+		self.resultDisplay.text = [NSString stringWithFormat:@"%g", result];
+	}
 }
 
 - (IBAction)moveCursor:(UIButton *)sender {
@@ -160,6 +165,22 @@ enum{
 		self.functionDisplay.text = @"sin(cos(23)-cos(sin(56*sin(32))))";
 	}
 	[self enterPressed];
+}
+
+- (IBAction)clearPressed:(id)sender {
+	self.functionDisplay.text = nil;
+	self.resultDisplay.text = @"0";
+	self.userIsInTheMiddleOfEnteringADigit = NO;
+}
+#pragma mark - autoRotation
+//or u can set from the target
+-(BOOL)shouldAutorotate
+{
+	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

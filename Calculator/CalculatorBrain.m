@@ -90,10 +90,19 @@
 }
 
 //if geometryOperand is nil, then just return the expression calculation
-+(double)performCalculationWithString:(NSString *)expressionString andGeometryOperand:(NSString *)geometryOperand
++(double)performCalculationWithString:(NSString *)expressionString andGeometryOperand:(NSString *)geometryOperand enccounterException:(void(^)(void))errorHandler
 {
 	double result = 0;
-	NSExpression *expression = [NSExpression expressionWithFormat:expressionString];
+	NSExpression *expression;
+	@try {
+		expression = [NSExpression expressionWithFormat:expressionString];
+	}
+	@catch (NSException *exception) {
+		NSLog(@"expression error = %@", exception);
+		errorHandler();
+		return 0;
+	}
+	
 	result = [[expression expressionValueWithObject:nil context:nil] doubleValue];
 	if ([geometryOperand hasPrefix:@"sin"]) {
 		result = sin(result);
@@ -103,10 +112,12 @@
 	return result;
 }
 
-+(double)calculateExpressFromString:(NSString *)expressionString
++(double)calculateExpressFromString:(NSString *)expressionString encounterException:(void (^)(void))errorHandler
 {
 	double result = 0;
-	//expressionString = @"sin(5+7 * sin(6-1)) + 5+6 + sin(6+5)";
+	//convert π,
+	expressionString = [expressionString stringByReplacingOccurrencesOfString:@"π" withString:[NSString stringWithFormat:@"%g", M_PI]];
+	
 	if ([expressionString rangeOfString:@"sin("].location != NSNotFound || [expressionString rangeOfString:@"cos("].location != NSNotFound) {
 		NSLog(@"expressionStringBefore = %@", expressionString);
 		//string has sin() operation
@@ -117,15 +128,15 @@
 		NSLog(@"innerMostGeometryOperandAndOperation = %@", [innerMostGeometryOperandAndOperation description]);
 		
 		NSRange innerMostGeometryStringRange = [expressionString rangeOfString:[NSString stringWithFormat:@"%@(%@)",innerMostGeometryOperand, innerMostGeometryOperation]];
-		double innerMostGeometryStringResult = [self performCalculationWithString:innerMostGeometryOperation andGeometryOperand:innerMostGeometryOperand];
+		double innerMostGeometryStringResult = [self performCalculationWithString:innerMostGeometryOperation andGeometryOperand:innerMostGeometryOperand enccounterException:errorHandler];
 		NSLog(@"expressionStringBefore = %@", expressionString);
 		expressionString = [expressionString stringByReplacingCharactersInRange:innerMostGeometryStringRange withString:[NSString stringWithFormat:@"%g", innerMostGeometryStringResult]];
 		NSLog(@"expressionStringAfter = %@", expressionString);
-		return [self calculateExpressFromString:expressionString];
+		return [self calculateExpressFromString:expressionString encounterException:errorHandler];
 	}
 
 	NSLog(@"expression result = %@", expressionString);
-	result = [self performCalculationWithString:expressionString andGeometryOperand:nil];
+	result = [self performCalculationWithString:expressionString andGeometryOperand:nil enccounterException:errorHandler];
 	NSLog(@"result = %g", result);
 	
 	return result;
