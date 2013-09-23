@@ -170,8 +170,8 @@ enum{
 			testResult = cos(sin(5)*cos(20)*sin(123)*8)*sqrt(134)*sin(M_PI)*cos(2*M_PI);
 			break;
 		case 3:
-			self.functionDisplay.text = @"sin(π)";
-			testResult = sin(M_PI);
+			self.functionDisplay.text = @"sqrt(-100)";
+			testResult = sqrt(-100);
 			self.testNumber = 0;
 	}
 	[self enterPressed];
