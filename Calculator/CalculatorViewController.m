@@ -197,7 +197,7 @@ enum{
 #pragma mark - GraphicViewDataSource
 -(CGFloat)getYValueAtX:(CGFloat)x sender:(GraphicView *)sender{
 	NSString *functionwithX = self.functionDisplay.text;
-	functionwithX = [functionwithX stringByReplacingOccurrencesOfString:@"x" withString:[NSString stringWithFormat:@"%f",x]];
+	functionwithX = [functionwithX stringByReplacingOccurrencesOfString:@"x" withString:[NSString stringWithFormat:@"(%f)",x]];
 	double result = [CalculatorBrain calculateExpressFromString:functionwithX encounterException:nil];
 	
 	return result;

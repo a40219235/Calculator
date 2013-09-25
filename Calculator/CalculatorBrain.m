@@ -84,7 +84,7 @@
 		}
 	}
 
-	//NSLog(@"        polished string = %@", polishingString);
+	NSLog(@"        polished string = %@", polishingString);
 	return polishingString;
 }
 
