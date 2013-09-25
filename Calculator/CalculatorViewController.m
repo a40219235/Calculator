@@ -8,6 +8,8 @@
 
 #import "CalculatorViewController.h"
 #import "CalculatorBrain.h"
+#import "GraphViewConroller.h"
+#import "GraphicView.h"
 
 enum{
 	kTestFunction1,
@@ -15,7 +17,7 @@ enum{
 	kTestFunction3
 }testFunctions;
 
-@interface CalculatorViewController ()
+@interface CalculatorViewController () <GraphicViewDataSource>
 @property (weak, nonatomic) IBOutlet UILabel *resultDisplay;
 @property (weak, nonatomic) IBOutlet UITextField *functionDisplay;
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringADigit;
@@ -184,6 +186,36 @@ enum{
 	self.resultDisplay.text = @"0";
 	self.userIsInTheMiddleOfEnteringADigit = NO;
 }
+
+- (IBAction)graphPressed:(id)sender {
+	if ([self splitViewGraphViewController]) {
+		[self splitViewGraphViewController].graphicView.dataSource = self;
+		[[self splitViewGraphViewController].graphicView setNeedsDisplay];
+	}
+}
+
+#pragma mark - GraphicViewDataSource
+-(CGFloat)getYValueAtX:(CGFloat)x sender:(GraphicView *)sender{
+	NSString *functionwithX = self.functionDisplay.text;
+	functionwithX = [functionwithX stringByReplacingOccurrencesOfString:@"x" withString:[NSString stringWithFormat:@"%f",x]];
+	double result = [CalculatorBrain calculateExpressFromString:functionwithX encounterException:nil];
+	
+	return result;
+}
+
+-(void)didFinishDrawing{
+//	[self splitViewGraphViewController].graphicView.dataSource = nil;
+}
+
+#pragma mark - splitView
+-(GraphViewConroller *)splitViewGraphViewController{
+	id splitViewDetailView = [self.splitViewController.viewControllers lastObject];
+	if (![splitViewDetailView isKindOfClass:[GraphViewConroller class]]) {
+		splitViewDetailView = nil;
+	}
+	return splitViewDetailView;
+}
+
 #pragma mark - autoRotation
 //or u can set from the target
 -(BOOL)shouldAutorotate
