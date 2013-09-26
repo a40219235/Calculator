@@ -23,6 +23,12 @@
 	return _geometryOperationStack;
 }
 
++(double)calculateFunctionFromString:(NSString *)expressionString withValueOfX:(float)x{
+	expressionString = [expressionString stringByReplacingOccurrencesOfString:@"x" withString:[NSString stringWithFormat:@"(%f)",x]];
+	
+	return [self calculateExpressFromString:expressionString encounterException:nil];
+}
+
 //if geometryOperand is nil, then just return the expression calculation
 +(double)performCalculationWithString:(NSString *)expressionString andGeometryOperand:(NSString *)geometryOperand enccounterException:(void(^)(void))errorHandler
 {
@@ -33,7 +39,7 @@
 	}
 	@catch (NSException *exception) {
 	//	NSLog(@"expression error = %@", exception);
-		errorHandler();
+		if (errorHandler) errorHandler();
 		return 0;
 	}
 	
@@ -84,7 +90,7 @@
 		}
 	}
 
-	NSLog(@"        polished string = %@", polishingString);
+//	NSLog(@"        polished string = %@", polishingString);
 	return polishingString;
 }
 

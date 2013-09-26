@@ -10,6 +10,7 @@
 #import "CalculatorBrain.h"
 #import "GraphViewConroller.h"
 #import "GraphicView.h"
+#import "SplitViewBarButtonItemPresenter.h"
 
 enum{
 	kTestFunction1,
@@ -17,7 +18,7 @@ enum{
 	kTestFunction3
 }testFunctions;
 
-@interface CalculatorViewController () <GraphicViewDataSource>
+@interface CalculatorViewController () <GraphicViewDataSource, UISplitViewControllerDelegate, SplitViewBarButtonItemPresenter, GraphicViewControllerDataSource>
 @property (weak, nonatomic) IBOutlet UILabel *resultDisplay;
 @property (weak, nonatomic) IBOutlet UITextField *functionDisplay;
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringADigit;
@@ -31,6 +32,7 @@ enum{
 @implementation CalculatorViewController
 @synthesize brain = _brain;
 @synthesize cursorNewPosition = _cursorNewPosition;
+@synthesize splitViewBarButtonItem = _splitViewBarButtonItem;
 
 -(UITextPosition *)cusorNewPosition
 {
@@ -48,12 +50,20 @@ enum{
 	return _brain;
 }
 
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+	GraphViewConroller *graphViewController = segue.destinationViewController;
+	graphViewController.delegate = self;
+	graphViewController.graphicView.dataSource = self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 	self.functionDisplay.inputView = [[UIView alloc] initWithFrame:CGRectZero];
 	self.functionDisplay.placeholder = @"x + a = 5";
+	self.splitViewController.delegate = self;
+	
 	[self.functionDisplay becomeFirstResponder];
 }
 
@@ -196,15 +206,21 @@ enum{
 
 #pragma mark - GraphicViewDataSource
 -(CGFloat)getYValueAtX:(CGFloat)x sender:(GraphicView *)sender{
-	NSString *functionwithX = self.functionDisplay.text;
-	functionwithX = [functionwithX stringByReplacingOccurrencesOfString:@"x" withString:[NSString stringWithFormat:@"(%f)",x]];
-	double result = [CalculatorBrain calculateExpressFromString:functionwithX encounterException:nil];
+	double result = [CalculatorBrain calculateFunctionFromString:self.functionDisplay.text withValueOfX:x];
 	
 	return result;
 }
 
 -(void)didFinishDrawing{
 //	[self splitViewGraphViewController].graphicView.dataSource = nil;
+}
+
+#pragma mark - GraphicViewControllerDataSource
+-(NSString *)functionDisplay:(GraphViewConroller *)sender{
+	if (!self.functionDisplay.text) {
+		return @"0";
+	}
+	return self.functionDisplay.text;
 }
 
 #pragma mark - splitView
@@ -225,6 +241,21 @@ enum{
         return YES;
     }
     return NO;
+}
+
+#pragma mark - splitView delegate
+-(void)splitViewController:(UISplitViewController *)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)pc{
+	barButtonItem.title = self.title;
+	[self splitViewGraphViewController].splitViewBarButtonItem = barButtonItem;
+}
+
+-(void)splitViewController:(UISplitViewController *)svc willShowViewController:(UIViewController *)aViewController invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem{
+	[self splitViewGraphViewController].splitViewBarButtonItem = nil;
+}
+
+-(BOOL)splitViewController:(UISplitViewController *)svc shouldHideViewController:(UIViewController *)vc inOrientation:(UIInterfaceOrientation)orientation
+{
+	return [self splitViewGraphViewController] ? UIInterfaceOrientationIsPortrait(orientation) : NO;
 }
 
 @end

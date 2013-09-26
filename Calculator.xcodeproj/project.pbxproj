@@ -30,6 +30,7 @@
 		2AAD8ABC17F10A1A00AF8E0A /* GraphicView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphicView.m; sourceTree = "<group>"; };
 		2AAD8ABE17F10BC700AF8E0A /* GraphViewConroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphViewConroller.h; sourceTree = "<group>"; };
 		2AAD8ABF17F10BC700AF8E0A /* GraphViewConroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewConroller.m; sourceTree = "<group>"; };
+		2ABF41BB17F35658000FAB9F /* SplitViewBarButtonItemPresenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitViewBarButtonItemPresenter.h; sourceTree = "<group>"; };
 		2ACC502817EB6FBB003B9337 /* Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2ACC502B17EB6FBB003B9337 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2ACC502D17EB6FBB003B9337 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -101,6 +102,7 @@
 				2ACC503B17EB6FBB003B9337 /* CalculatorAppDelegate.m */,
 				2ACC504317EB6FBB003B9337 /* MainStoryboard_iPhone.storyboard */,
 				2ACC504617EB6FBB003B9337 /* MainStoryboard_iPad.storyboard */,
+				2ABF41BB17F35658000FAB9F /* SplitViewBarButtonItemPresenter.h */,
 				2ACC504917EB6FBB003B9337 /* CalculatorViewController.h */,
 				2ACC504A17EB6FBB003B9337 /* CalculatorViewController.m */,
 				2ACC505117EB73AB003B9337 /* CalculatorBrain.h */,

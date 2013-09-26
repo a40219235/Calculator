@@ -113,7 +113,7 @@
 			
 		}
 		
-		for (int i = 0;  i > self.originPosion.x -self.bounds.size.width; i--) {
+		for (int i = 0;  i > -self.originPosion.x; i--) {
 			
 			CGFloat realXValue = valuePerPixel * i;
 			CGPoint startPoint = CGPointMake(i, [self.dataSource getYValueAtX:realXValue sender:self]/valuePerPixel);
@@ -125,8 +125,7 @@
 			[self drawLineFromPoint:convertedStartPoint toPoint:convertedEndPoint];
 			
 		}
-		
-		[self.dataSource didFinishDrawing];
+		if ([self.dataSource respondsToSelector:@selector(didFinishDrawing)]) [self.dataSource didFinishDrawing];
 	}
 	
 	

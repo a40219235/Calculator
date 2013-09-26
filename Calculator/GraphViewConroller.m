@@ -8,15 +8,31 @@
 
 #import "GraphViewConroller.h"
 #import "GraphicView.h"
+#import "CalculatorBrain.h"
 
 @interface GraphViewConroller ()
 
-
-
+@property (weak, nonatomic) IBOutlet UILabel *functionDisplay;
 @end
 
 @implementation GraphViewConroller
 @synthesize graphicView = _graphicView;
+@synthesize splitViewBarButtonItem = _splitViewBarButtonItem;
+
+-(void)setSplitViewBarButtonItem:(UIBarButtonItem *)splitViewBarButtonItem
+{
+	if (![_splitViewBarButtonItem isEqual: splitViewBarButtonItem]) {
+		NSMutableArray *toolBarItem = [self.toolBar.items mutableCopy];
+		if (_splitViewBarButtonItem) {
+			[toolBarItem removeObject:_splitViewBarButtonItem];
+		}
+		if (splitViewBarButtonItem) {
+			[toolBarItem insertObject:splitViewBarButtonItem atIndex:0];
+		}
+		self.toolBar.items = toolBarItem;
+		_splitViewBarButtonItem = splitViewBarButtonItem;
+	}
+}
 
 #pragma mark - setter and getter
 -(void)setGraphicView:(GraphicView *)graphicView
@@ -28,8 +44,9 @@
 	[self.graphicView addGestureRecognizer:pan];
 }
 #pragma mark - gesture handler
-//panning gesture should handle here because view dose not know about the origin
-
+-(void)awakeFromNib{
+	NSLog(@"awake from nib");
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -44,7 +61,8 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-	
+	self.functionDisplay.text = [self.delegate functionDisplay:self];
+	self.graphicView.dataSource = self;
 }
 
 //bounds only correct after it appears
@@ -57,6 +75,14 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+- (IBAction)backPressed:(id)sender {
+	[self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(CGFloat)getYValueAtX:(CGFloat)x sender:(GraphicView *)sender{
+	double result = [CalculatorBrain calculateFunctionFromString:self.functionDisplay.text withValueOfX:x];
+	return result;
 }
 
 @end

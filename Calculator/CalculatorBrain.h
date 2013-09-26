@@ -11,4 +11,6 @@
 @interface CalculatorBrain : NSObject
 +(double)calculateExpressFromString:(NSString *)expressionString encounterException:(void(^)(void))errorHandler;
 
++(double)calculateFunctionFromString:(NSString *)expressionString withValueOfX:(float)x;
+
 @end
