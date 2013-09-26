@@ -36,6 +36,7 @@
 	NSExpression *expression;
 	@try {
 		expression = [NSExpression expressionWithFormat:expressionString];
+		result = [[expression expressionValueWithObject:nil context:nil] doubleValue];
 	}
 	@catch (NSException *exception) {
 	//	NSLog(@"expression error = %@", exception);
@@ -43,7 +44,6 @@
 		return 0;
 	}
 	
-	result = [[expression expressionValueWithObject:nil context:nil] doubleValue];
 	if ([geometryOperand hasPrefix:@"sin"]) {
 		result = sin(result);
 	}else if ([geometryOperand hasPrefix:@"cos"]){
