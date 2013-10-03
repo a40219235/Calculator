@@ -116,14 +116,14 @@
 		double innerMostGeometryStringResult = [self performCalculationWithString:innerMostGeometryOperation andGeometryOperand:innerMostGeometryOperand enccounterException:errorHandler];
 
 		expressionString = [expressionString stringByReplacingCharactersInRange:innerMostGeometryStringRange withString:[NSString stringWithFormat:@"(%g)", innerMostGeometryStringResult]];
-		//NSLog(@"trimming String         = %@", expressionString);
+//		NSLog(@"trimming String         = %@", expressionString);
 		//maybe better using for or while loop, but i'll use recursive call for learning purpose
 		return [self calculateExpressFromString:expressionString encounterException:errorHandler];
 	}
 
 	result = [self performCalculationWithString:expressionString andGeometryOperand:nil enccounterException:errorHandler];
-	//	NSLog(@"result                  = %g", result);
-	//NSLog(@"finish ---------------------");
+//		NSLog(@"result                  = %g", result);
+//	NSLog(@"finish ---------------------");
 	return result;
 }
 

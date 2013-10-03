@@ -65,9 +65,10 @@
 	self.graphicView.dataSource = self;
 }
 
-//bounds only correct after it appears
+//bounds only correct after it appears, cause the graphicView is set
 -(void)viewDidAppear:(BOOL)animated
 {
+	[super viewWillAppear:animated];
 	self.graphicView.originPosion = CGPointMake(self.graphicView.bounds.origin.x + self.graphicView.bounds.size.width/2, self.graphicView.bounds.origin.y + self.graphicView.bounds.size.height/2);
 }
 

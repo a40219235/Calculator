@@ -234,13 +234,8 @@ enum{
 
 #pragma mark - autoRotation
 //or u can set from the target
--(BOOL)shouldAutorotate
-{
-	UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-    if (orientation == UIDeviceOrientationPortrait || orientation == UIDeviceOrientationPortraitUpsideDown) {
-        return YES;
-    }
-    return NO;
+-(NSUInteger )supportedInterfaceOrientations{
+	return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
 }
 
 #pragma mark - splitView delegate

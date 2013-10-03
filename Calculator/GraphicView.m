@@ -127,8 +127,6 @@
 		}
 		if ([self.dataSource respondsToSelector:@selector(didFinishDrawing)]) [self.dataSource didFinishDrawing];
 	}
-	
-	
 }
 
 -(void)drawLineFromPoint:(CGPoint)startPoint toPoint:(CGPoint)endPoint{
